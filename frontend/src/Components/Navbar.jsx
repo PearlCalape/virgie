@@ -129,7 +129,7 @@ export default function Navbar() {
 
     const userId = localStorage.getItem("userId");
     if (userId) {
-      fetch(`${process.env.URL}/likes/${userId}`)
+      fetch(`https://virgie-backend.onrender.com/likes/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           setLikedProductsCount(data.length);
@@ -139,7 +139,7 @@ export default function Navbar() {
         });
 
       // Fetch firstName from the users endpoint
-      fetch(`${process.env.URL}/users/${userId}`)
+      fetch(`https://virgie-backend.onrender.com/users/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           // Assuming the response contains a property called 'firstName'

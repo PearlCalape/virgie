@@ -19,7 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = `${process.env.URL}/signup`;
+      const url = "https://virgie-backend.onrender.com/signup";
       const response = await fetch(url, {
         method: "POST",
         headers: {
