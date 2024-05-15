@@ -4,7 +4,7 @@ const { getDb, connectToDb } = require("./db");
 const { ObjectId } = require("mongodb");
 const Joi = require("joi");
 var cors = require("cors");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passwordComplexity = require("joi-password-complexity");
 
@@ -89,37 +89,38 @@ app.get("/products/:id", (req, res) => {
 });
 
 // User schema and validation
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  password: { 
-    type: String,
-    required: true 
-  },
-  phone: {
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
       type: String,
       required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: Number,
+      default: 0,
+    },
   },
-  address: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: Number,
-    default: 0,
-  },
-},
-{ timestamps: true }
+  { timestamps: true }
 );
 
 userSchema.methods.generateAuthToken = function () {
@@ -137,11 +138,15 @@ const validateUser = (data) => {
     lastName: Joi.string().required().label("Last Name"),
     email: Joi.string().email().required().label("Email"),
     password: passwordComplexity().required().label("Password"),
-    phone: Joi.string().pattern(new RegExp(/^\d{11}$/)).required().label("Phone").messages({
-      'string.pattern.base': 'Phone must be exactly 11 digits',
-      'any.required': 'Phone is required',
-    }),
-    address: Joi.string().required().label("Address")
+    phone: Joi.string()
+      .pattern(new RegExp(/^\d{11}$/))
+      .required()
+      .label("Phone")
+      .messages({
+        "string.pattern.base": "Phone must be exactly 11 digits",
+        "any.required": "Phone is required",
+      }),
+    address: Joi.string().required().label("Address"),
   });
   return schema.validate(data);
 };
@@ -179,7 +184,7 @@ app.post("/signup", async (req, res) => {
 
 // Login route
 app.post("/signin", async (req, res) => {
-    try {
+  try {
     const { error } = validateLogin(req.body);
     if (error)
       return res.status(400).send({ message: error.details[0].message });
@@ -196,18 +201,15 @@ app.post("/signin", async (req, res) => {
       return res.status(401).send({ message: "Invalid Email or Password" });
 
     const token = user.generateAuthToken();
-    res
-      .status(200)
-      .send({
-        userId: user._id,
-        token: token,
-        message: "logged in successfully",
-      });
+    res.status(200).send({
+      userId: user._id,
+      token: token,
+      message: "logged in successfully",
+    });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
   }
-});  
-
+});
 
 app.post("/likes/add", (req, res) => {
   const { userId, productId } = req.body; // Extract userId and productId from the request body
@@ -341,11 +343,8 @@ app.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
-
-
 //orders
-app.get("/orders", requireSignIn, 
-async (req, res) => {
+app.get("/orders", requireSignIn, async (req, res) => {
   try {
     const orders = await orderModel
       .find({ buyer: req.user._id })
@@ -363,8 +362,7 @@ async (req, res) => {
 });
 
 //all orders
-app.get("/all-orders", requireSignIn, isAdmin, 
-async (req, res) => {
+app.get("/all-orders", requireSignIn, isAdmin, async (req, res) => {
   try {
     const orders = await orderModel
       .find({})
@@ -383,27 +381,22 @@ async (req, res) => {
 });
 
 // order status update
-app.put(
-  "/order-status/:orderId",
-  requireSignIn,
-  isAdmin,
-  async (req, res) => {
-    try {
-      const { orderId } = req.params;
-      const { status } = req.body;
-      const orders = await orderModel.findByIdAndUpdate(
-        orderId,
-        { status },
-        { new: true }
-      );
-      res.json(orders);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        success: false,
-        message: "Error While Updateing Order",
-        error,
-      });
-    }
+app.put("/order-status/:orderId", requireSignIn, isAdmin, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    const orders = await orderModel.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error While Updateing Order",
+      error,
+    });
   }
-);
+});
