@@ -14,9 +14,9 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(
-  cors({
+  cors(/* {
     origin: ["http://localhost:5173", "https://virgie-frontend.onrender.com"],
-  })
+  } */)
 );
 
 // db connection
@@ -36,6 +36,7 @@ connectToDb((err) => {
 app.get("/", (req, res) => {
   res.send("Welcome to the root path!");
 });
+
 app.get("/products", (req, res) => {
   // current page
   const page = req.query.p || 0;
