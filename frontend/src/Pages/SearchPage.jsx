@@ -6,7 +6,7 @@ const SearchPage = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   const fetchData = (value) => {
-    fetch(`process.env.URL/products`)
+    fetch(`${process.env.URL}/products`)
       .then((response) => response.json())
       .then((json) => {
         const filteredResults = json.filter((user) => {

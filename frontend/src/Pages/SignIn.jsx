@@ -13,7 +13,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "process.env.URL/signin";
+      const url = `${process.env.URL}/signin`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
