@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Error from "./Error";
- 
- 
- 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
- 
+
 export default function Product() {
   const { productId } = useParams();
   const userId = localStorage.getItem("userId");
@@ -17,15 +15,14 @@ export default function Product() {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const navigateTo = useNavigate();
- 
- 
+
   useEffect(() => {
     // Simulate fetching product data from an API
     // Replace with an actual API call, using the provided productId
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/products/${productId}`
+          `https://virgie-backend.onrender.com/products/${productId}`
         ); // Replace with your API endpoint
         if (response.status === 404) {
           setError("Product not found");
@@ -36,14 +33,13 @@ export default function Product() {
           //new
           if (userId) {
             const likeResponse = await fetch(
-              `http://localhost:8080/likes/${userId}/${productId}`
+              `https://virgie-backend.onrender.com/likes/${userId}/${productId}`
             );
             if (likeResponse.status === 200) {
               setLiked(true);
             }
           }
           //new
-
         } else {
           setError("Error fetching product data");
         }
@@ -54,30 +50,30 @@ export default function Product() {
         setLoading(false);
       }
     };
- 
+
     fetchProduct();
   }, [productId]); // Fetch data whenever productId changes
- 
+
   if (loading) {
     return <div></div>;
   }
- 
+
   if (error) {
     return <Error message={error} linkText="Go back home" linkUrl="/" />;
   }
- 
+
   const handleRemoveToLikes = async () => {
     try {
       // First, send a GET request to fetch the liked item's ID
       const response = await fetch(
-        `http://localhost:8080/likes/${userId}/${productId}`
+        `https://virgie-backend.onrender.com/likes/${userId}/${productId}`
       );
       if (response.status === 200) {
         const like = await response.json();
- 
+
         // Now that you have the liked item's ID, you can send a DELETE request to remove it
         const deleteResponse = await fetch(
-          `http://localhost:8080/likes/delete/${like._id}`,
+          `https://virgie-backend.onrender.com/likes/delete/${like._id}`,
           {
             method: "DELETE",
             headers: {
@@ -85,11 +81,11 @@ export default function Product() {
             },
           }
         );
- 
+
         if (deleteResponse.status === 204 || 200) {
           // The like was successfully removed
           setLiked(false);
-          window.location.reload()
+          window.location.reload();
         } else {
           console.error(
             "Failed to remove the like. Status code: " + deleteResponse.status
@@ -104,11 +100,8 @@ export default function Product() {
       console.error("Error removing from likes:", error);
     }
   };
- 
- 
- 
+
   const handleAddToLikes = async () => {
- 
     if (!token) {
       alert("You need to be logged in.");
       navigateTo("/signin"); // Redirect the user to /signin route
@@ -116,21 +109,24 @@ export default function Product() {
     }
     try {
       // If the product is not liked, send a POST request to add it
-      const response = await fetch("http://localhost:8080/likes/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          productId: productId,
-        }),
-      });
- 
+      const response = await fetch(
+        "https://virgie-backend.onrender.com/likes/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            productId: productId,
+          }),
+        }
+      );
+
       if (response.status === 201) {
         // The like was successfully added
         setLiked(true);
-        window.location.reload()
+        window.location.reload();
       } else {
         // Handle errors, e.g., show a message to the user
       }
@@ -138,7 +134,7 @@ export default function Product() {
       console.error("Error adding/removing from likes:", error);
     }
   };
- 
+
   // If product is found, continue rendering the product details
   return (
     <div className="bg-white">
@@ -153,18 +149,19 @@ export default function Product() {
               />
             </div>
           </div>
- 
+
           <div className="lg:col-span-1 lg:border-r lg:border-gray-200 lg:pr-8">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {product.name}
             </h1>
- 
+
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <div className="flex items-center">
                 <p
-                  className={`text-3xl tracking-tight text-gray-900 ${product.saleprice ? "line-through" : ""
-                    }`}
+                  className={`text-3xl tracking-tight text-gray-900 ${
+                    product.saleprice ? "line-through" : ""
+                  }`}
                 >
                   ₱ {product.originalprice}
                 </p>
@@ -174,7 +171,7 @@ export default function Product() {
                   </p>
                 )}
               </div>
- 
+
               <div className="mt-10">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900">
@@ -192,18 +189,17 @@ export default function Product() {
                   ))}
                 </div>
               </div>
- 
- 
+
               <button
                 type="button"
                 onClick={liked ? handleRemoveToLikes : handleAddToLikes}
-                className={`mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-pink-600 px-8 py-3 text-base font-medium text-white hover-bg-pink-700 focus:outline-none focus:ring-2 focus-ring-pink-500 focus-ring-offset-2${liked ? "bg-gray-300" : ""
-                  }`}
+                className={`mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-pink-600 px-8 py-3 text-base font-medium text-white hover-bg-pink-700 focus:outline-none focus:ring-2 focus-ring-pink-500 focus-ring-offset-2${
+                  liked ? "bg-gray-300" : ""
+                }`}
               >
                 {liked ? "Remove from likes" : "Add to likes"}
               </button>
- 
- 
+
               <div className="py-10">
                 <div>
                   <h3 className="sr-only">Description</h3>
@@ -212,7 +208,6 @@ export default function Product() {
                       {product.description}
                     </p>
                   </div>
- 
                 </div>
               </div>
             </div>
@@ -220,7 +215,5 @@ export default function Product() {
         </div>
       </div>
     </div>
- 
- 
   );
-} 
+}

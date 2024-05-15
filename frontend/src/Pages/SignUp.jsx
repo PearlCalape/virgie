@@ -19,7 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:8080/signup";
+      const url = "https://virgie-backend.onrender.com/signup";
       const response = await fetch(url, {
         method: "POST",
         headers: {

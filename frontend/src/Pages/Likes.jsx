@@ -7,7 +7,7 @@ function Likes() {
 
   useEffect(() => {
     // Fetch liked products from the server
-    fetch(`http://localhost:8080/likes/${userId}`)
+    fetch(`https://virgie-backend.onrender.com/likes/${userId}`)
       .then((response) => response.json())
       .then((data) => setLikedProducts(data))
       .catch((error) => console.error('Error fetching liked products:', error));
@@ -69,8 +69,8 @@ function Likes() {
 
 export default Likes;
  */
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Likes() {
   const [likedProducts, setLikedProducts] = useState([]);
@@ -82,46 +82,52 @@ function Likes() {
     const fetchData = async () => {
       try {
         // Fetch liked product IDs from the server
-        const likesResponse = await fetch(`http://localhost:8080/likes/${userId}`);
+        const likesResponse = await fetch(
+          `https://virgie-backend.onrender.com/likes/${userId}`
+        );
         if (!likesResponse.ok) {
-          throw new Error('Network response was not ok.');
+          throw new Error("Network response was not ok.");
         }
         const likesData = await likesResponse.json();
         setLikedProducts(likesData);
-  
+
         // Fetch detailed product information using the liked product IDs
-        const productIds = likesData.map((likedProduct) => likedProduct.productId);
-        const productsResponse = await fetch(`http://localhost:8080/products`);
+        const productIds = likesData.map(
+          (likedProduct) => likedProduct.productId
+        );
+        const productsResponse = await fetch(
+          `https://virgie-backend.onrender.com/products`
+        );
         if (!productsResponse.ok) {
-          throw new Error('Network response was not ok.');
+          throw new Error("Network response was not ok.");
         }
         const productsData = await productsResponse.json();
-  
+
         // Filter detailedProducts based on product IDs from likedProducts
         const filteredProducts = productsData.filter((product) =>
           productIds.includes(product._id)
         );
         setDetailedProducts(filteredProducts);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         // Handle error state or display a user-friendly message to the user
       }
     };
-  
+
     if (userId) {
       fetchData();
     } else {
-      navigate('/signin');
+      navigate("/signin");
     }
   }, [userId, navigate]);
 
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-
         <div>
-        
-        <p className="text-mg  text-gray-900">{detailedProducts.length} Liked Products</p>
+          <p className="text-mg  text-gray-900">
+            {detailedProducts.length} Liked Products
+          </p>
         </div>
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Your Likes
@@ -130,7 +136,6 @@ function Likes() {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {detailedProducts.map((product) => (
             <div key={product.id} className="group relative">
-             
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                 <img
                   src={product.image}
@@ -149,7 +154,6 @@ function Likes() {
                 </div>
               </div>
 
-              
               <div className="object-left flex items-center">
                 <p
                   className={`mt-1 text-sm ${
