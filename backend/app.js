@@ -13,7 +13,11 @@ require("dotenv").config();
 // init app & middleware
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:8080", "https://virgie-frontend.onrender.com"],
+  })
+);
 
 // db connection
 let db;
