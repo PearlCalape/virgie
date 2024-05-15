@@ -111,10 +111,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phone: {
-      type: String,
-      required: true,
-    },
     address: {
       type: String,
       required: true,
@@ -142,15 +138,6 @@ const validateUser = (data) => {
     lastName: Joi.string().required().label("Last Name"),
     email: Joi.string().email().required().label("Email"),
     password: passwordComplexity().required().label("Password"),
-    phone: Joi.string()
-      .pattern(new RegExp(/^\d{11}$/))
-      .required()
-      .label("Phone")
-      .messages({
-        "string.pattern.base": "Phone must be exactly 11 digits",
-        "any.required": "Phone is required",
-      }),
-    address: Joi.string().required().label("Address"),
   });
   return schema.validate(data);
 };
