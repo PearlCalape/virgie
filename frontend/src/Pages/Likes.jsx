@@ -7,7 +7,7 @@ function Likes() {
 
   useEffect(() => {
     // Fetch liked products from the server
-    fetch(`https://virgie-backend.onrender.com/likes/${userId}`)
+    fetch(`process.env.URL/likes/${userId}`)
       .then((response) => response.json())
       .then((data) => setLikedProducts(data))
       .catch((error) => console.error('Error fetching liked products:', error));
@@ -82,9 +82,7 @@ function Likes() {
     const fetchData = async () => {
       try {
         // Fetch liked product IDs from the server
-        const likesResponse = await fetch(
-          `https://virgie-backend.onrender.com/likes/${userId}`
-        );
+        const likesResponse = await fetch(`/likes/${userId}`);
         if (!likesResponse.ok) {
           throw new Error("Network response was not ok.");
         }
@@ -95,9 +93,7 @@ function Likes() {
         const productIds = likesData.map(
           (likedProduct) => likedProduct.productId
         );
-        const productsResponse = await fetch(
-          `https://virgie-backend.onrender.com/products`
-        );
+        const productsResponse = await fetch(`process.env.URL/products`);
         if (!productsResponse.ok) {
           throw new Error("Network response was not ok.");
         }

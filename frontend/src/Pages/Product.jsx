@@ -21,9 +21,7 @@ export default function Product() {
     // Replace with an actual API call, using the provided productId
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `https://virgie-backend.onrender.com/products/${productId}`
-        ); // Replace with your API endpoint
+        const response = await fetch(`process.env.URL/products/${productId}`); // Replace with your API endpoint
         if (response.status === 404) {
           setError("Product not found");
         } else if (response.ok) {
@@ -33,7 +31,7 @@ export default function Product() {
           //new
           if (userId) {
             const likeResponse = await fetch(
-              `https://virgie-backend.onrender.com/likes/${userId}/${productId}`
+              `process.env.URL/likes/${userId}/${productId}`
             );
             if (likeResponse.status === 200) {
               setLiked(true);
@@ -66,14 +64,14 @@ export default function Product() {
     try {
       // First, send a GET request to fetch the liked item's ID
       const response = await fetch(
-        `https://virgie-backend.onrender.com/likes/${userId}/${productId}`
+        `process.env.URL/likes/${userId}/${productId}`
       );
       if (response.status === 200) {
         const like = await response.json();
 
         // Now that you have the liked item's ID, you can send a DELETE request to remove it
         const deleteResponse = await fetch(
-          `https://virgie-backend.onrender.com/likes/delete/${like._id}`,
+          `process.env.URL/likes/delete/${like._id}`,
           {
             method: "DELETE",
             headers: {
@@ -109,19 +107,16 @@ export default function Product() {
     }
     try {
       // If the product is not liked, send a POST request to add it
-      const response = await fetch(
-        "https://virgie-backend.onrender.com/likes/add",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: userId,
-            productId: productId,
-          }),
-        }
-      );
+      const response = await fetch("process.env.URL/likes/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          productId: productId,
+        }),
+      });
 
       if (response.status === 201) {
         // The like was successfully added
