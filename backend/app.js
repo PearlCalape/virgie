@@ -33,6 +33,10 @@ connectToDb((err) => {
 
 // routes
 //get all products
+app.get("/", (req, res) => {
+  res.send("Welcome to the root path!");
+});
+
 app.get("/products", (req, res) => {
   // current page
   const page = req.query.p || 0;
