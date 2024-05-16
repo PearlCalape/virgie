@@ -83,7 +83,7 @@ function Likes() {
       try {
         // Fetch liked product IDs from the server
         const likesResponse = await fetch(
-          `${process.env.BACKEND_URL}/likes/${userId}`
+          `https://virgie-backend.onrender.com/likes/${userId}`
         );
         if (!likesResponse.ok) {
           throw new Error("Network response was not ok.");
@@ -96,7 +96,7 @@ function Likes() {
           (likedProduct) => likedProduct.productId
         );
         const productsResponse = await fetch(
-          `${process.env.BACKEND_URL}/products`
+          `https://virgie-backend.onrender.com/products`
         );
         if (!productsResponse.ok) {
           throw new Error("Network response was not ok.");

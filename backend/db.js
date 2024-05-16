@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
 
 module.exports = {
   connectToDb: (cb) => {
@@ -8,13 +7,12 @@ module.exports = {
       useUnifiedTopology: true,
     };
 
-    mongoose
-      .connect(process.env.MONGO_ATLAS, connectionParams)
+    mongoose.connect("mongodb+srv://pearlnerijeancalape:pearlnerijean.calape@cluster0.1mzryqu.mongodb.net/Avon?retryWrites=true&w=majority", connectionParams)
       .then(() => {
         console.log("Connected to database successfully");
         return cb();
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
         console.log("Could not connect to the database!");
         return cb(error);
