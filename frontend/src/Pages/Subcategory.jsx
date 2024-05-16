@@ -5,9 +5,7 @@ export default function Subcategory({ category }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `https://virgie-backend.onrender.com/products/subcategory/${category}`
-    )
+    fetch(`${process.env.BACKEND_URL}/products/subcategory/${category}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
